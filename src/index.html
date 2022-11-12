@@ -2,7 +2,7 @@
  * @Author: DWP
  * @Date: 2021-10-14 15:20:50
  * @LastEditors: DWP
- * @LastEditTime: 2021-10-19 15:51:06
+ * @LastEditTime: 2022-11-12 20:42:16
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -45,6 +45,25 @@
     .progress-ratio {
       margin-left: 10px;
     }
+    .progress-detail {
+      padding-left: 0;
+      display: flex;
+      flex-wrap: wrap;
+      list-style-type: none;
+    }
+    .progress-item {
+      margin: 5px;
+      width: 20px;
+      height: 20px;
+      border: 1px solid #ddd;
+    }
+    .progress-success {
+      background: #1890ff;
+    }
+    .progress-fail {
+      background: #f00;
+    }
+
     @keyframes progress-active {
       0% {
         width: 0;
@@ -71,6 +90,7 @@
       </div>
       <div id="progressRatio" class="progress-ratio">0%</div>
     </div>
+    <ul class="progress-detail" id="progressDetail"></ul>
   </div>
 </body>
 </html>

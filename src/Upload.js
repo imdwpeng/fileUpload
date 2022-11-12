@@ -2,7 +2,7 @@
  * @Author: DWP
  * @Date: 2021-10-15 10:34:51
  * @LastEditors: DWP
- * @LastEditTime: 2021-10-18 18:00:28
+ * @LastEditTime: 2022-11-12 20:20:28
  */
 import axios from './axios';
 import TaskQueue from './TaskQueue';
@@ -50,12 +50,12 @@ class Upload {
     };
 
     this.config = { ...defaultConfig, ...props };
-    this.progress = 0;
+    this.successCount = 0;
     this.total = 0;
 
     // 初始化数据
     this.init = () => {
-      this.progress = 0;
+      this.successCount = 0;
       this.total = 0;
     };
   }
@@ -111,7 +111,7 @@ class Upload {
       },
     });
 
-    chunks.forEach((chunk) => {
+    chunks.forEach((chunk, index) => {
       const form = new FormData();
       form.append('file', chunk.file);
       form.append('filename', chunk.filename);
@@ -119,16 +119,28 @@ class Upload {
       const task = () => axios
         .post(self.config.url, form)
         .then((res) => {
-          self.progress += chunk.file.size;
-
+          self.successCount += 1;
           if (self.config.updateProgress) {
             self.config.updateProgress({
-              progress: self.progress,
-              total: self.total,
+              index: index + 1,
+              status: true,
+              progress: Number((self.successCount / chunks.length).toFixed(2)),
+              size: chunks.length,
             });
           }
 
           return res;
+        }).catch(() => {
+          if (self.config.updateProgress) {
+            self.config.updateProgress({
+              index: index + 1,
+              status: false,
+              progress: Number((self.successCount / chunks.length).toFixed(2)),
+              size: chunks.length,
+            });
+          }
+
+          return Promise.reject();
         });
 
       taskQueue.pushTask(task);
