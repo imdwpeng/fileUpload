@@ -1,0 +1,47 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Document</title><style>.progress {
+      display: flex;
+      align-items: center;
+    }
+    .progress-bar {
+      flex: auto;
+      height: 8px;
+      background: #f5f5f5;
+      border-radius: 100px;
+    }
+    .progress-bg {
+      position: relative;
+      width: 0;
+      height: 8px;
+      background: #1890ff;
+      border-radius: 100px;
+      transition: all .4s cubic-bezier(.08, .82, .17, 1) 0s;
+    }
+    .progress-bg:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: #fff;
+      border-radius: 10px;
+      opacity: 0;
+      animation: progress-active 2.4s cubic-bezier(.23, 1, .32, 1) infinite;
+    }
+    .progress-ratio {
+      margin-left: 10px;
+    }
+    @keyframes progress-active {
+      0% {
+        width: 0;
+        opacity: .1;
+      }
+      20% {
+        width: 0;
+        opacity: .5;
+      }
+      100% {
+        width: 100%;
+        opacity: 0;
+      }
+    }</style><script defer="defer" src="./main.bundle.js"></script></head><body><div id="test"></div><input id="fileInput" type="file"><div><div class="progress"><div class="progress-bar"><div id="progressBg" class="progress-bg"></div></div><div id="progressRatio" class="progress-ratio">0%</div></div></div></body></html>
