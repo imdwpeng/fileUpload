@@ -14,6 +14,7 @@ class TaskQueue {
     this.retryRunning = []; // 当前正在重试的任务队列
     this.results = []; // 请求结果
     this.callback = props.callback; // 结束回调
+    this.isPause = false; // 是否暂停任务
   }
 
   // 添加任务
@@ -25,9 +26,23 @@ class TaskQueue {
     this.next();
   }
 
+  // 暂停任务
+  pause() {
+    this.isPause = true;
+  }
+
+  // 继续任务
+  continue() {
+    this.isPause = false;
+    this.next();
+  }
+
   // 执行任务
   next() {
     while (this.running < this.max && this.queue.length) {
+      // 暂停任务，直接跳出循环
+      if (this.isPause) break;
+
       const { task, key } = this.queue.shift();
 
       // 占用通道
@@ -52,7 +67,7 @@ class TaskQueue {
     }
 
     // 全部任务执行完后，执行重试的任务
-    if (this.running === 0) {
+    if (this.running === 0 && !this.isPause) {
       this.retryNext();
     }
   }

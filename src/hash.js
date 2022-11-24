@@ -17,7 +17,7 @@ self.onmessage = ({ data }) => {
 
     spark.append(buffer);
 
-    // 生成随机的文件名称
+    // 生成文件名称
     const hash = spark.end();
     // 文件格式
     const suffix = /\.([0-9a-zA-Z]+)$/.exec(file.name)[1];
