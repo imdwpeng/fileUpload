@@ -2,7 +2,7 @@
  * @Author: DWP
  * @Date: 2021-10-14 14:31:23
  * @LastEditors: DWP
- * @LastEditTime: 2021-10-18 13:15:23
+ * @LastEditTime: 2022-11-25 21:47:09
  */
 const fs = require('fs');
 const express = require('express');
@@ -98,22 +98,24 @@ app.post('/upload_merge', async (req, res) => {
   }
 });
 
+// 校验文件上传情况，返回已上传的切片，用于断点续传和秒传
 app.get('/upload_already', async (req, res) => {
-  const { hash } = req.query;
-  const path = `${uploadDir}/${hash}`;
+  const { hash, fileName } = req.query;
+  const path = `${chunksDir}/${hash}`;
   let fileList = [];
+  const isExist = fs.existsSync(`${chunksDir}/${fileName}`);
 
   try {
-    fileList = fs.readdirSync(path);
-    fileList = fileList.sort((a, b) => {
-      const reg = /_(\d+)/;
-      return reg.exec(a)[1] - reg.exec(b)[1];
-    });
+    fileList = fs.existsSync(path) ? fs.readdirSync(path) : [];
+    if (fileList.length > 0) {
+      fileList = fileList.map((file) => file.split('.')[0] - 0).sort((a, b) => a - b);
+    }
 
     res.send({
       code: 0,
       codeText: '',
       fileList,
+      isExist,
     });
   } catch (err) {
     res.send({

@@ -6,6 +6,7 @@
  */
 self.importScripts('/spark-md5.min.js');
 
+// 生成文件hash值
 self.onmessage = ({ data }) => {
   const { file } = data;
   const fileReader = new FileReader();

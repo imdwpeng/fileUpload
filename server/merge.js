@@ -8,9 +8,6 @@ const fs = require('fs');
 
 const uploadDir = 'chunks';
 
-// 判断切片是否存在
-const exists = (hash, count) => {};
-
 const merge = ({
   hash,
   count,
@@ -23,7 +20,7 @@ const merge = ({
 
   fileList = fs.readdirSync(path);
 
-  if (fileList.length < count) return reject(new Error('the slice has not been uploaded!'));
+  if (fileList.length < count) return reject(new Error('not all slices have not been uploaded!'));
 
   // 切片文件排序
   fileList
@@ -38,7 +35,7 @@ const merge = ({
   // 删除切片文件夹
   fs.rmdirSync(path);
 
-  resolve({
+  return resolve({
     path: `${uploadDir}/${name}`,
     filename: `${name}`,
   });

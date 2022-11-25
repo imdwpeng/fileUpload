@@ -2,41 +2,31 @@
  * @Author: DWP
  * @Date: 2021-10-15 10:34:51
  * @LastEditors: DWP
- * @LastEditTime: 2022-11-24 21:37:11
+ * @LastEditTime: 2022-11-25 21:47:12
  */
 import axios from './axios';
 import TaskQueue from './TaskQueue';
 
 export const changeBuffer = (file) => new Promise((resolve) => {
+  // 创建一个worker对象
   const work = new Worker('hash.js');
+
+  // 向子线程发送消息，并传入文件对象和切片大小，开始计算分割切片
   work.postMessage({ file });
+
+  // 子线程计算完成后，会将切片返回主线程
   work.onmessage = (e) => {
     resolve({ ...e.data });
   };
 });
 
-// 文件切片
-const getChunks = (options = {}) => {
-  const {
-    file,
-    hash,
-    suffix,
-    space,
-  } = options;
-  const count = Math.ceil(file.size / space);
-  let index = 0;
-  const chunks = [];
-
-  while (index < count) {
-    chunks.push({
-      file: file.slice(index * space, (index + 1) * space),
-      filename: `${hash}_${index}.${suffix}`,
-    });
-    index += 1;
-  }
-
-  return chunks;
-};
+const getChunks = (params) => new Promise((resolve) => {
+  const work = new Worker('chunks.js');
+  work.postMessage(params);
+  work.onmessage = (e) => {
+    resolve(e.data);
+  };
+});
 
 class Upload {
   constructor(props) {
@@ -94,7 +84,7 @@ class Upload {
     const { hash, suffix } = await changeBuffer(file);
 
     // 切片
-    const chunks = getChunks({
+    const chunks = await getChunks({
       file,
       hash,
       suffix,

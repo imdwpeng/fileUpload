@@ -31,6 +31,10 @@ module.exports = {
           from: path.resolve(__dirname, './src/hash.js'),
           to: path.resolve(__dirname, './dist/hash.js'),
         },
+        {
+          from: path.resolve(__dirname, './src/chunks.js'),
+          to: path.resolve(__dirname, './dist/chunks.js'),
+        },
       ],
     }),
   ],
