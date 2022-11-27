@@ -30,9 +30,10 @@ window.onload = () => {
   }, 100);
 
   // 开始上传
-  const startUpload = (file, ignoreFileList = []) => {
+  const startUpload = (file, hash, ignoreFileList = []) => {
     upload = new Upload({
       url: 'http://localhost:3000/upload',
+      hash,
       ignoreFileList,
       updateProgress: (params) => {
         const {
@@ -95,7 +96,7 @@ window.onload = () => {
       const { hash } = res;
 
       checkUploadedFile(hash, file.name).then((fileList) => {
-        startUpload(file, fileList);
+        startUpload(file, hash, fileList);
       });
     });
   });

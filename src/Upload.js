@@ -2,7 +2,7 @@
  * @Author: DWP
  * @Date: 2021-10-15 10:34:51
  * @LastEditors: DWP
- * @LastEditTime: 2022-11-25 21:47:12
+ * @LastEditTime: 2022-11-26 17:25:54
  */
 import axios from './axios';
 import TaskQueue from './TaskQueue';
@@ -81,13 +81,10 @@ class Upload {
 
     self.total = file.size;
 
-    const { hash, suffix } = await changeBuffer(file);
-
     // 切片
     const chunks = await getChunks({
       file,
-      hash,
-      suffix,
+      hash: self.config.hash,
       space: self.config.space,
     });
 
@@ -99,7 +96,7 @@ class Upload {
         if (self.config.callback) {
           self.config.callback({
             result,
-            hash,
+            hash: self.config.hash,
             count: chunks.length,
           });
         }
@@ -113,7 +110,7 @@ class Upload {
         self.successProgress.push(index);
         if (self.config.updateProgress) {
           self.config.updateProgress({
-            index: index + 1,
+            index,
             status: true,
             progress: Number((self.successCount / chunks.length).toFixed(2)),
             size: chunks.length,

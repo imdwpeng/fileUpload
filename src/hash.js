@@ -2,7 +2,7 @@
  * @Author: DWP
  * @Date: 2021-10-18 15:45:14
  * @LastEditors: DWP
- * @LastEditTime: 2021-10-18 15:45:15
+ * @LastEditTime: 2022-11-25 21:54:52
  */
 self.importScripts('/spark-md5.min.js');
 
@@ -20,14 +20,7 @@ self.onmessage = ({ data }) => {
 
     // 生成文件名称
     const hash = spark.end();
-    // 文件格式
-    const suffix = /\.([0-9a-zA-Z]+)$/.exec(file.name)[1];
 
-    self.postMessage({
-      buffer,
-      hash,
-      suffix,
-      filename: `${hash}.${suffix}`,
-    });
+    self.postMessage({ hash });
   };
 };
