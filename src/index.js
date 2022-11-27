@@ -2,7 +2,7 @@
  * @Author: DWP
  * @Date: 2021-10-15 10:16:24
  * @LastEditors: DWP
- * @LastEditTime: 2022-11-25 21:47:16
+ * @LastEditTime: 2022-11-27 20:53:31
  */
 import Upload, { changeBuffer } from './Upload';
 import axios from './axios';
@@ -31,13 +31,28 @@ window.onload = () => {
 
   // 开始上传
   const startUpload = (file, hash, ignoreFileList = []) => {
+    const space = 1024 * 1024;
+    const count = Math.ceil(file.size / space);
+    // 单个进度
+    const ulDom = document.getElementById('progressDetail');
+    if (!ulDom.innerHTML) {
+      const node = document.createDocumentFragment();
+      for (let i = 0; i < count; i++) {
+        const li = document.createElement('li');
+        li.className = 'progress-item';
+        node.appendChild(li);
+      }
+      ulDom.appendChild(node);
+    }
+
     upload = new Upload({
       url: 'http://localhost:3000/upload',
       hash,
+      space,
       ignoreFileList,
       updateProgress: (params) => {
         const {
-          index, status, progress, size,
+          index, status, progress,
         } = params;
 
         // 总进度
@@ -45,18 +60,6 @@ window.onload = () => {
           const ratio = `${parseInt(progress * 100, 10)}%`;
           document.getElementById('progressRatio').innerText = ratio;
           document.getElementById('progressBg').style.width = ratio;
-        }
-
-        // 单个进度
-        const ulDom = document.getElementById('progressDetail');
-        if (!ulDom.innerHTML) {
-          const node = document.createDocumentFragment();
-          for (let i = 0; i < size; i++) {
-            const li = document.createElement('li');
-            li.className = 'progress-item';
-            node.appendChild(li);
-          }
-          ulDom.appendChild(node);
         }
 
         ulDom.childNodes[index - 1].className = status ? 'progress-item progress-success' : 'progress-item progress-fail';
